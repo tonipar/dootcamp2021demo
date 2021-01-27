@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ user.username }}!</h1>
+    <h1>Hi, {{ current_user.username }}!</h1>
     {% for round in rounds %}
     <div>
         <p>{{ round.course.coursename }} score is: <b>{{ round.score }}</b></p>
