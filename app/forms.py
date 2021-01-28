@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
-from app.models import User
+from app.models import User, Course, Hole
 
 # Contains forms that app uses
 
@@ -52,6 +52,22 @@ class EditProfileForm(FlaskForm):
             email = User.query.filter_by(email=self.email.data).first()
             if email is not None:
                 raise ValidationError('Email is already in use.')
+
+class CreateCourseForm(FlaskForm):
+    coursename = StringField('Coursename', validators=[DataRequired()])
+    courseholes = IntegerField('Courseholes', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
+    def validate_coursename(self, coursename):
+        user = Course.query.filter_by(coursename=coursename.data).first()
+        if user is not None:
+            raise ValidationError('Course already registered.')
+
+class AddCourseHoleForm(FlaskForm):
+    holenum = IntegerField('Holenum', validators=[DataRequired()])
+    holepar = IntegerField('Holepar', validators=[DataRequired()])
+    holelength = IntegerField('Holelegth')
+    submit = SubmitField('Submit')
 
     
 

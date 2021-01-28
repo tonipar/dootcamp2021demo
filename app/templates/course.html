@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Course: {{ course.coursename }}</h1>
+
+<hr>
+{% for hole in course.courseholes %}
+<p>
+    print('väylä' + " " + hole)
+</p>
+<hr>
+{% endfor %}
+{% endblock %}

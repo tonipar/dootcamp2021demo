@@ -2,8 +2,8 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, CreateCourseForm, AddCourseHoleForm
+from app.models import User, Course, Hole
 
 # Contains different URLs that app has
 
@@ -89,4 +89,29 @@ def edit_profile():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    return render_template('edit_profile.html', title='Edit Profile',form=form)
+    return render_template('edit_profile.html', title='Edit Profile', form=form)
+    
+@app.route('/createcourse', methods=['GET', 'POST'])
+def createcourse():
+    form = CreateCourseForm()
+    if form.validate_on_submit():
+        course = Course(coursename=form.coursename.data, courseholes=form.courseholes.data)
+        db.session.add(course)
+        db.session.commit()
+
+        for holenum in range(form.courseholes.data):
+            holenum = holenum+1
+            hole = Hole(holenum=holenum, holepar=3, holecourse_id=course.id)
+            db.session.add(hole)
+            db.session.commit()
+        
+        flash('New course has been created!')
+
+        return redirect(url_for('createcourse'))
+    return render_template('createcourse.html', title='Register', form=form)
+
+@app.route('/course/<coursename>')
+@login_required
+def course(coursename):
+    course = Course.query.filter_by(coursename=coursename).first_or_404()
+    return render_template('course.html', course=course)
