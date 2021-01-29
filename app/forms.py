@@ -63,11 +63,20 @@ class CreateCourseForm(FlaskForm):
         if user is not None:
             raise ValidationError('Course already registered.')
 
+
 class AddCourseHoleForm(FlaskForm):
     holenum = IntegerField('Holenum', validators=[DataRequired()])
     holepar = IntegerField('Holepar', validators=[DataRequired()])
     holelength = IntegerField('Holelegth')
     submit = SubmitField('Submit')
+
+class EditHoleForm(FlaskForm):
+    holepar = IntegerField('Par', validators=[DataRequired()])
+    holelength = IntegerField('Lenght')
+    submit = SubmitField('Submit')
+
+
+
 
     
 

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit {{coursename}} Holes</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.holepar.label }}<br>
+        {{ form.holepar(size=32) }}<br>
+        {% for error in form.holepar.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.holelength.label }}<br>
+        {{ form.holelength(size=32) }}<br>
+        {% for error in form.holelength.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

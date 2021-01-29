@@ -35,7 +35,7 @@ class User(UserMixin, db.Model):
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     coursename = db.Column(db.String(64), index=True, unique=True)
-    courseholes = (db.Integer)
+    courseholes = db.Column(db.Integer)
     rounds = db.relationship('Round', backref='course', lazy='dynamic')
     holes = db.relationship('Hole', backref='course', lazy='dynamic')
     

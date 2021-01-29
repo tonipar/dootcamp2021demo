@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Course: {{ course.coursename }}</h1>
+<h1> {{course.coursename}} </h1>
 
-<hr>
-{% for hole in course.courseholes %}
-<p>
-    print('väylä' + " " + hole)
-</p>
-<hr>
+{% for hole in holes %}
+<p> Hole: {{hole.holenum}} / Par: {{hole.holepar}} / Length: {{hole.holelength}} </p>
+<a href="{{ url_for('edithole', coursename=course.coursename, holenum=hole.holenum) }}">Edit Hole information</a>
 {% endfor %}
+
+
+
 {% endblock %}

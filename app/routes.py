@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, CreateCourseForm, AddCourseHoleForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, CreateCourseForm, AddCourseHoleForm, EditHoleForm
 from app.models import User, Course, Hole
 
 # Contains different URLs that app has
@@ -12,18 +12,9 @@ from app.models import User, Course, Hole
 @app.route('/index')
 @login_required
 def index():
-    user = {'username': 'Miguel'}
-    rounds = [
-        {
-            'course': {'coursename': 'Puijo DGP'},
-            'score': '-1'
-        },
-        {
-            'course': {'coursename': 'Peltosalmi DGP'},
-            'score': '-4'
-        }
-    ]
-    return render_template('index.html', title='Home', rounds=rounds)
+    
+    users = User.query.all()
+    return render_template('index.html', title='Home', users = users)
 
 # Login Page. If user is already logged in redirect user to the main page.
 # If password or username is wrong user will get error message.
@@ -110,8 +101,32 @@ def createcourse():
         return redirect(url_for('createcourse'))
     return render_template('createcourse.html', title='Register', form=form)
 
+@app.route('/courses')
+@login_required
+def courses():
+    courses = Course.query.all()
+    return render_template('courses.html', courses = courses)
+
 @app.route('/course/<coursename>')
 @login_required
 def course(coursename):
     course = Course.query.filter_by(coursename=coursename).first_or_404()
-    return render_template('course.html', course=course)
+    holes = Hole.query.filter_by(holecourse_id=course.id)
+    return render_template('course.html', course=course, holes=holes)
+
+@app.route('/edithole/<coursename>/<holenum>', methods=['GET', 'POST'])
+@login_required
+def edithole(coursename, holenum):
+    course = Course.query.filter_by(coursename=coursename).first_or_404()
+    hole = Hole.query.filter_by(holenum=holenum).first_or_404()
+    form = EditHoleForm()
+    if form.validate_on_submit():
+        hole.holepar = form.holepar.data
+        hole.holelength = form.holelength.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('edithole', coursename=coursename, holenum=holenum ))
+    elif request.method == 'GET':
+        form.holepar.data = hole.holepar
+        form.holelength.data = hole.holelength
+    return render_template('edithole.html', title='Edit Hole', form=form)
