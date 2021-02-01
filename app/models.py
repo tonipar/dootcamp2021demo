@@ -5,6 +5,7 @@ from flask_login import UserMixin
 from app import login
 
 
+
 # Contains models for database tables. SQLAlchemy will convert these to proper tables for database.
 
 # Loads given users Id for Flask-Login to keep track logged users.
@@ -36,11 +37,14 @@ class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     coursename = db.Column(db.String(64), index=True, unique=True)
     courseholes = db.Column(db.Integer)
+    courselocation = db.Column(db.String(64))
     rounds = db.relationship('Round', backref='course', lazy='dynamic')
     holes = db.relationship('Hole', backref='course', lazy='dynamic')
     
     def __repr__(self):
         return '<Course {}>'.format(self.coursename)
+
+
 
 class Hole(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,7 +59,7 @@ class Hole(db.Model):
 
 class Round(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    rounddate = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    rounddate = db.Column(db.DateTime, default=datetime.utcnow)
     roundweather = db.Column(db.String(16))
     rounduser_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     roundcourse_id = db.Column(db.Integer, db.ForeignKey('course.id'))
@@ -68,4 +72,6 @@ class Roundscore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hole = db.Column(db.Integer)
     score = db.Column(db.Integer)
+    ob = db.Column(db.Boolean)
     round_id = db.Column(db.Integer, db.ForeignKey('round.id'))
+    db.UniqueConstraint('hole', 'round_id', name='roundhole')

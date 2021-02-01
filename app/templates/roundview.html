@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1> Round Finished </h1>
+
+{% for score in scores %}
+
+<p> Hole: {{score.holenum}} / Score: {{score.score}} / Ob: {{score.ob}} </p>
+
+{% endfor %}
+
+
+
+{% endblock %}

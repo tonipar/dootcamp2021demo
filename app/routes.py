@@ -2,8 +2,10 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, CreateCourseForm, AddCourseHoleForm, EditHoleForm
-from app.models import User, Course, Hole
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, CreateCourseForm, AddCourseHoleForm, EditHoleForm, CreateRoundForm, ScoreForm
+from app.models import User, Course, Hole, Round, Roundscore
+from datetime import datetime, date
+from pyowm.owm import OWM
 
 # Contains different URLs that app has
 
@@ -84,9 +86,10 @@ def edit_profile():
     
 @app.route('/createcourse', methods=['GET', 'POST'])
 def createcourse():
+
     form = CreateCourseForm()
     if form.validate_on_submit():
-        course = Course(coursename=form.coursename.data, courseholes=form.courseholes.data)
+        course = Course(coursename=form.coursename.data, courseholes=form.courseholes.data, courselocation=form.courselocation.data)
         db.session.add(course)
         db.session.commit()
 
@@ -98,7 +101,7 @@ def createcourse():
         
         flash('New course has been created!')
 
-        return redirect(url_for('createcourse'))
+        return redirect(url_for('course', coursename=course.coursename))
     return render_template('createcourse.html', title='Register', form=form)
 
 @app.route('/courses')
@@ -125,8 +128,63 @@ def edithole(coursename, holenum):
         hole.holelength = form.holelength.data
         db.session.commit()
         flash('Your changes have been saved.')
-        return redirect(url_for('edithole', coursename=coursename, holenum=holenum ))
+        return redirect(url_for('course', coursename=coursename ))
     elif request.method == 'GET':
         form.holepar.data = hole.holepar
         form.holelength.data = hole.holelength
     return render_template('edithole.html', title='Edit Hole', form=form)
+
+@app.route('/createround', methods=['GET', 'POST'])
+def createround():
+
+    form = CreateRoundForm()
+    if form.validate_on_submit():
+        
+        
+        course = Course.query.filter_by(coursename=form.course.data).first_or_404()
+        today = date.today()
+        
+        owm = OWM('309d1acf125bea57bb26866e210087ca')
+        mgr = owm.weather_manager()
+        observation = mgr.weather_at_place("Kuopio")
+        weather = observation.weather
+        icon = weather.weather_icon_name
+        
+        round = Round(rounddate=today, roundweather=icon, rounduser_id= current_user.id ,roundcourse_id= course.id)
+        db.session.add(round)
+        db.session.commit()
+        
+        flash('New round has been started!')
+        holenum = 1
+        return redirect(url_for('roundscores', roundid = round.id, holenum = holenum))
+    return render_template('createround.html', title='Start new round', form=form)
+
+@app.route('/roundscores/<roundid>/<holenum>', methods=['GET', 'POST'])
+def roundscores(roundid, holenum):
+    round = Round.query.filter_by(id=roundid).first_or_404()
+    course = Course.query.filter_by(id=round.roundcourse_id).first_or_404()
+    if not isinstance(holenum, int):
+        holenum = int(holenum)
+
+    if holenum > course.courseholes:
+        return redirect(url_for('roundview', roundid=round.id))
+
+    form = ScoreForm()
+    if form.validate_on_submit():
+        roundscore = Roundscore(hole=holenum, score=form.score.data, ob=form.ob.data, round_id = roundid)
+        db.session.add(roundscore)
+        db.session.commit()
+        
+        flash('Score for hole' + str(holenum) + ' has been updated!')
+
+        holenum = holenum+1
+
+        return redirect(url_for('roundscores', roundid = roundid, holenum = holenum))
+    return render_template('roundscores.html', title='Round', coursename= course.coursename, holenum=holenum, form=form)
+
+@app.route('/roundview/<roundid>')
+def roundview(roundid):
+    current_round = Round.query.filter_by(id=roundid).first_or_404()
+    scores = Roundscore.query.filter_by(round_id=roundid)
+    course = Course.query.filter_by(id=current_round.roundcourse_id).first_or_404()
+    return render_template('roundview.html', title='Roundview', scores = scores, course = course)

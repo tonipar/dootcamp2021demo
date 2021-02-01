@@ -4,7 +4,7 @@
 <h1>Courses</h1>
 {% for course in courses %}
 <div>
-    <p>{{ course.coursename }} </p> 
+    <p>{{ course.coursename }} / {{ course.courselocation }}</p> 
     
     <a href="{{ url_for('course', coursename=course.coursename) }}">View</a>
 

@@ -17,7 +17,14 @@
         {% for error in form.courseholes.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-    </p>    
+    </p> 
+    <p>
+        {{ form.courselocation.label }}<br>
+        {{ form.courselocation(size=64) }}<br>
+        {% for error in form.courselocation.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
     <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}

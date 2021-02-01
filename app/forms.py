@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User, Course, Hole
 
@@ -56,6 +56,7 @@ class EditProfileForm(FlaskForm):
 class CreateCourseForm(FlaskForm):
     coursename = StringField('Coursename', validators=[DataRequired()])
     courseholes = IntegerField('Courseholes', validators=[DataRequired()])
+    courselocation = StringField('courselocation', validators=[DataRequired()])
     submit = SubmitField('Submit')
     
     def validate_coursename(self, coursename):
@@ -75,6 +76,19 @@ class EditHoleForm(FlaskForm):
     holelength = IntegerField('Lenght')
     submit = SubmitField('Submit')
 
+class CreateRoundForm(FlaskForm):
+   courses = Course.query.all()
+   choices = []
+   for c in courses:
+       choices.append(c.coursename)
+
+   course = SelectField(choices=choices)
+   submit = SubmitField('Submit')
+
+class ScoreForm(FlaskForm):
+    score = IntegerField('Score', validators=[DataRequired()])
+    ob = BooleanField('Ob')
+    submit = SubmitField('Submit')
 
 
 

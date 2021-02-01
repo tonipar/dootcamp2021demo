@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1> {{ coursename}} / Hole {{ holenum }} </h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.score.label }}<br>
+        {{ form.score(size=64) }}<br>
+        {% for error in form.score.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.ob.label }}<br>
+        {{ form.ob(size=64) }}<br>
+        {% for error in form.ob.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+
+    <p>{{ form.submit() }}</p>
+
+</form>
+
+{% endblock %}
+
