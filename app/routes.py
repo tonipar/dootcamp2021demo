@@ -15,8 +15,7 @@ from pyowm.owm import OWM
 @login_required
 def index():
     
-    users = User.query.all()
-    return render_template('index.html', title='Home', users = users)
+    return render_template('index.html', title='Home', rounds = current_user.get_rounds())
 
 # Login Page. If user is already logged in redirect user to the main page.
 # If password or username is wrong user will get error message.
@@ -121,7 +120,7 @@ def course(coursename):
 @login_required
 def edithole(coursename, holenum):
     course = Course.query.filter_by(coursename=coursename).first_or_404()
-    hole = Hole.query.filter_by(holenum=holenum).first_or_404()
+    hole = Hole.query.filter_by(holenum = holenum, holecourse_id = course.id).first_or_404()
     form = EditHoleForm()
     if form.validate_on_submit():
         hole.holepar = form.holepar.data
@@ -137,10 +136,9 @@ def edithole(coursename, holenum):
 @app.route('/createround', methods=['GET', 'POST'])
 def createround():
 
+    courses = Course.query.all()
     form = CreateRoundForm()
     if form.validate_on_submit():
-        
-        
         course = Course.query.filter_by(coursename=form.course.data).first_or_404()
         today = date.today()
         
@@ -157,7 +155,7 @@ def createround():
         flash('New round has been started!')
         holenum = 1
         return redirect(url_for('roundscores', roundid = round.id, holenum = holenum))
-    return render_template('createround.html', title='Start new round', form=form)
+    return render_template('createround.html', title='Start new round', courses = courses, form=form)
 
 @app.route('/roundscores/<roundid>/<holenum>', methods=['GET', 'POST'])
 def roundscores(roundid, holenum):

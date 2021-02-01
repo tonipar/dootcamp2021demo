@@ -2,16 +2,28 @@
 
 {% block content %}
 <h1>Create Round</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.course.label }}<br>
-        {{ form.course(size=32) }}<br>
-        {% for error in form.course.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
 
-    <p>{{ form.submit() }}</p>
-</form>
+{% if courses|length == 0 %}
+    <div>
+        <p>
+            No Courses available. You can create course <a href="{{ url_for('createcourse') }}">here</a>
+        </p>
+    </div>
+{% else %}
+    <div>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.course.label }}<br>
+                {{ form.course(size=1) }}<br>
+                {% for error in form.course.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+        
+            <p>{{ form.submit() }}</p>
+        </form>
+    </div>
+{% endif %}
+
 {% endblock %}

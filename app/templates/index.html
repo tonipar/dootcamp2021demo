@@ -2,11 +2,22 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}</h1>
-    <h2>Users</h2>
-    {% for user in users %}
-    <div>
-        <p>{{ user.username }} email: <b>{{ user.email }}</b></p>
-    </div>
-    {% endfor %}
+    <h2>Past Rounds</h2>
+    
+    {% if rounds.count() == 0 %}
+        <div>
+            <p>
+                No past rounds. You can start round <a href="{{ url_for('createround') }}">here</a>
+            </p>   
+        </div>
+    {% else %}
+        <div>
+            {% for round in rounds %}
+            <div>
+                <p>{{ round.get_coursename() }} date:{{ round.get_date() }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     
 {% endblock %}

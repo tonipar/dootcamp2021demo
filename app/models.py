@@ -30,6 +30,10 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_rounds(self):
+        playedrounds = Round.query.filter_by(rounduser_id=self.id)
+        return playedrounds
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -67,6 +71,14 @@ class Round(db.Model):
 
     def __repr__(self):
         return '<Hole {}>'.format(self.date)
+
+    def get_coursename(self):
+        course = Course.query.filter_by(id=self.roundcourse_id).first()
+        return course.coursename
+    
+    def get_date(self):
+        date = self.rounddate.strftime('%d/%m/%Y')
+        return date
 
 class Roundscore(db.Model):
     id = db.Column(db.Integer, primary_key=True)

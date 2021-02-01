@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
+from wtforms.validators import ValidationError, DataRequired, Optional, Email, EqualTo, Length
 from app.models import User, Course, Hole
 
 # Contains forms that app uses
@@ -73,7 +73,7 @@ class AddCourseHoleForm(FlaskForm):
 
 class EditHoleForm(FlaskForm):
     holepar = IntegerField('Par', validators=[DataRequired()])
-    holelength = IntegerField('Lenght')
+    holelength = IntegerField('Lenght', validators=[Optional()])
     submit = SubmitField('Submit')
 
 class CreateRoundForm(FlaskForm):
