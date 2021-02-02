@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<h1> Round Finished </h1>
+<h1> Round Statistics </h1>
 
 {% for score in scores %}
 
-<p> Hole: {{score.holenum}} / Score: {{score.score}} / Ob: {{score.ob}} </p>
+<p> Hole {{score.hole}}: / Par: {{score.get_par(course.id)}} / Score: {{score.score}} / Ob: {{score.ob}} </p>
 
 {% endfor %}
 

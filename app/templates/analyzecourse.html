@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1> Course Statistics </h1>
+
+<h2> {{ course.coursename }} </h2>
+
+{% for round in rounds %}
+
+    <p> {{ round.get_date() }} / <img src="{{ round.get_weatherurl() }}" alt="weather icon"></p>
+    {% set scores = round.get_scores() %}
+    {% for score in scores %}
+        <p> Hole {{score.hole}}: / Par: {{score.get_par(course.id)}} / Score: {{score.score}} / Ob: {{score.ob}} </p>
+    {% endfor %}
+
+{% endfor %}
+
+
+
+{% endblock %}

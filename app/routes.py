@@ -182,7 +182,13 @@ def roundscores(roundid, holenum):
 
 @app.route('/roundview/<roundid>')
 def roundview(roundid):
-    current_round = Round.query.filter_by(id=roundid).first_or_404()
-    scores = Roundscore.query.filter_by(round_id=roundid)
-    course = Course.query.filter_by(id=current_round.roundcourse_id).first_or_404()
-    return render_template('roundview.html', title='Roundview', scores = scores, course = course)
+    round = Round.query.filter_by(id=roundid).first_or_404()
+    scores = round.get_scores()
+    course = Course.query.filter_by(id=round.roundcourse_id).first_or_404()
+    return render_template('roundview.html', title='Roundview', scores=scores, course=course)
+    
+@app.route('/analyzecourse/<coursename>')
+def analyzecourse(coursename):
+    course = Course.query.filter_by(coursename=coursename).first_or_404()
+    rounds = course.get_rounds(current_user.id)
+    return render_template('analyzecourse.html', title='Analyze Course', course=course, rounds=rounds)

@@ -48,6 +48,15 @@ class Course(db.Model):
     def __repr__(self):
         return '<Course {}>'.format(self.coursename)
 
+    def get_holes(self):
+        holes = Hole.query.filter_by(holecourse_id=self.id)
+        return holes
+    
+    def get_rounds(self, userid):
+        rounds = Round.query.filter_by(roundcourse_id=self.id, rounduser_id=userid)
+        return rounds
+
+
 
 
 class Hole(db.Model):
@@ -70,7 +79,7 @@ class Round(db.Model):
     roundscores = db.relationship('Roundscore', backref='round', lazy='dynamic')
 
     def __repr__(self):
-        return '<Hole {}>'.format(self.date)
+        return '<Round {}>'.format(self.id)
 
     def get_coursename(self):
         course = Course.query.filter_by(id=self.roundcourse_id).first()
@@ -79,6 +88,19 @@ class Round(db.Model):
     def get_date(self):
         date = self.rounddate.strftime('%d/%m/%Y')
         return date
+    
+    def get_scores(self):
+        scores = Roundscore.query.filter_by(round_id=self.id)
+        return scores
+    
+    def get_holescore(self, holenum):
+        score = Roundscore.query.filter_by(round_id=self.id, hole=holenum).first_or_404()
+        return score.score
+
+    def get_weatherurl(self):
+        url = "http://openweathermap.org/img/wn/" + self.roundweather + ".png"
+        return url
+
 
 class Roundscore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -87,3 +109,7 @@ class Roundscore(db.Model):
     ob = db.Column(db.Boolean)
     round_id = db.Column(db.Integer, db.ForeignKey('round.id'))
     db.UniqueConstraint('hole', 'round_id', name='roundhole')
+
+    def get_par(self, courseid):
+        hole = Hole.query.filter_by(holecourse_id=courseid, holenum=self.hole).first_or_404()
+        return hole.holepar

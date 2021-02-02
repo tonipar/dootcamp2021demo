@@ -14,7 +14,11 @@
         <div>
             {% for round in rounds %}
             <div>
-                <p>{{ round.get_coursename() }} date:{{ round.get_date() }}</p>
+                <p>{{ round.get_coursename() }} / 
+                    date:{{ round.get_date() }} /  
+                    weather: <img src= "{{ round.get_weatherurl() }}" alt="weather icon">
+                    <a href="{{ url_for('roundview', roundid = round.id)}}">View</a>
+                </p>
             </div>
             {% endfor %}
         </div>
