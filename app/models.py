@@ -51,13 +51,25 @@ class Course(db.Model):
     def get_holes(self):
         holes = Hole.query.filter_by(holecourse_id=self.id)
         return holes
-    
+
+    def get_coursepar(self):
+        holes = Hole.query.filter_by(holecourse_id=self.id)
+        par = 0
+        for hole in holes:
+            par = par + hole.holepar
+        return par
+
     def get_rounds(self, userid):
         rounds = Round.query.filter_by(roundcourse_id=self.id, rounduser_id=userid)
         return rounds
 
-
-
+    def get_holemean(self, userid, holenum):
+        rounds = Round.query.filter_by(roundcourse_id=self.id, rounduser_id=userid)
+        holetotal = 0
+        for round in rounds:
+            holetotal = holetotal + round.get_holescore(holenum)
+        holemean = holetotal / rounds.count()
+        return holemean
 
 class Hole(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -93,9 +105,18 @@ class Round(db.Model):
         scores = Roundscore.query.filter_by(round_id=self.id)
         return scores
     
+    def get_totalscore(self):
+        scores = Roundscore.query.filter_by(round_id=self.id)
+        totalscore = 0
+        for score in scores:
+            totalscore = totalscore + score.score
+        return totalscore
+
     def get_holescore(self, holenum):
         score = Roundscore.query.filter_by(round_id=self.id, hole=holenum).first_or_404()
         return score.score
+
+    
 
     def get_weatherurl(self):
         url = "http://openweathermap.org/img/wn/" + self.roundweather + ".png"

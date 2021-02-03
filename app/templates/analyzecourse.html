@@ -4,7 +4,17 @@
 
 <h1> Course Statistics </h1>
 
-<h2> {{ course.coursename }} </h2>
+<h2> {{ course.coursename }} rounds played: {{rounds.count()}} </h2>
+
+{% set holes = course.get_holes() %}
+{% for hole in holes %}
+
+<p> Hole: {{hole.holenum}} / Par: {{hole.holepar}} / Mean core: {{course.get_holemean(current_user.id, hole.holenum)}} </p>
+
+
+{% endfor %}
+
+<h2> Past rounds </h2>
 
 {% for round in rounds %}
 
@@ -13,6 +23,7 @@
     {% for score in scores %}
         <p> Hole {{score.hole}}: / Par: {{score.get_par(course.id)}} / Score: {{score.score}} / Ob: {{score.ob}} </p>
     {% endfor %}
+    <p>Total score / Par: {{ course.get_coursepar() }} / Score: {{ round.get_totalscore() }}</p>
 
 {% endfor %}
 
