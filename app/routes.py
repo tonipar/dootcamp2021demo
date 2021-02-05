@@ -84,6 +84,7 @@ def edit_profile():
     return render_template('edit_profile.html', title='Edit Profile', form=form)
     
 @app.route('/createcourse', methods=['GET', 'POST'])
+@login_required
 def createcourse():
 
     form = CreateCourseForm()
@@ -134,6 +135,7 @@ def edithole(coursename, holenum):
     return render_template('edithole.html', title='Edit Hole', form=form)
 
 @app.route('/createround', methods=['GET', 'POST'])
+@login_required
 def createround():
 
     courses = Course.query.all()
@@ -158,6 +160,7 @@ def createround():
     return render_template('createround.html', title='Start new round', courses = courses, form=form)
 
 @app.route('/roundscores/<roundid>/<holenum>', methods=['GET', 'POST'])
+@login_required
 def roundscores(roundid, holenum):
     round = Round.query.filter_by(id=roundid).first_or_404()
     course = Course.query.filter_by(id=round.roundcourse_id).first_or_404()
@@ -181,6 +184,7 @@ def roundscores(roundid, holenum):
     return render_template('roundscores.html', title='Round', coursename= course.coursename, holenum=holenum, form=form)
 
 @app.route('/roundview/<roundid>')
+@login_required
 def roundview(roundid):
     round = Round.query.filter_by(id=roundid).first_or_404()
     scores = round.get_scores()
@@ -188,6 +192,7 @@ def roundview(roundid):
     return render_template('roundview.html', title='Roundview', scores=scores, course=course)
     
 @app.route('/analyzecourse/<coursename>')
+@login_required
 def analyzecourse(coursename):
     course = Course.query.filter_by(coursename=coursename).first_or_404()
     rounds = course.get_rounds(current_user.id)

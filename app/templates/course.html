@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1> {{course.coursename}} </h1>
+<h1 class="text-center"> {{course.coursename}} </h1>
 
 {% for hole in holes %}
 <p> Hole: {{hole.holenum}} / Par: {{hole.holepar}} / Length: {{hole.holelength}} </p>

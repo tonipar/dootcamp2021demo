@@ -1,27 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}</h1>
-    <h2>Past Rounds</h2>
-    
+<div class="container my-3">
+    <h1 class="text-center">Hello {{ current_user.username }}</h1>
+</div>
+<div class="container my-5">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary btn-lg btn-block" href="{{ url_for('createround') }}">
+                Start new round
+            </button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary btn-lg btn-block" href="{{ url_for('courses') }}">
+                Analyze courses
+            </button>
+        </div>
+    </div>
+</div>
+<div class="container my-3">
+    <h2 class="text-center">Past Rounds</h2>
     {% if rounds.count() == 0 %}
-        <div>
-            <p>
-                No past rounds. You can start round <a href="{{ url_for('createround') }}">here</a>
-            </p>   
-        </div>
+        <p class="text-center">
+            No past rounds. You can start round <a href="{{ url_for('createround') }}">here</a>
+        </p>
     {% else %}
-        <div>
-            {% for round in rounds %}
-            <div>
-                <p>{{ round.get_coursename() }} / 
-                    date:{{ round.get_date() }} /  
-                    weather: <img src= "{{ round.get_weatherurl() }}" alt="weather icon">
-                    <a href="{{ url_for('roundview', roundid = round.id)}}">View</a>
-                </p>
-            </div>
-            {% endfor %}
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Course</th>
+                    <th scope="col">Par</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Weather</th>
+                    <th scope="col">Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for round in rounds %}
+                    <tr>
+                        <td>{{ round.get_coursename() }}</td>
+                        <td>{{round.get_totalscorepar()}}</td>
+                        <td>{{ round.get_date() }}</td>
+                        <td><img src="{{ round.get_weatherurl() }}" alt="weather icon"></td>
+                        <td><a class="badge badge-info" href="{{ url_for('roundview', roundid = round.id)}}">View</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
-    
+</div>  
 {% endblock %}
