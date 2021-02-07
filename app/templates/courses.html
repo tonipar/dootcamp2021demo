@@ -1,12 +1,10 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container my-3">
     <h1 class="text-center">Courses</h1>
 </div>
 <div class="container my-5">
-    <button type="button" class="btn btn-primary btn-lg btn-block" href="{{ url_for('createcourse') }}">Create New
-        Course</button>
+    <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('createcourse') }}" role="button">Create New Course</a>
 </div>
 <div class="container my-3">
     <table class="table">

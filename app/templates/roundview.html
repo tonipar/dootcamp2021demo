@@ -1,15 +1,51 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<h1> Round Statistics </h1>
-
-{% for score in scores %}
-
-<p> Hole {{score.hole}}: / Par: {{score.get_par(course.id)}} / Score: {{score.score}} / Ob: {{score.ob}} </p>
-
-{% endfor %}
-
-
-
+<div class="container my-3">
+    <h1 class="text-center">Round Statistics</h1>
+</div>
+<div class="container my-5">
+    <table class="table table-inverse table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Hole</th>
+                {% for score in scores %}
+                <th scope="col">{{score.hole}}</th>
+                {% endfor%}
+                <th scope="col">Total +/-</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="col">Par</th>
+                {% for score in scores %}
+                <td class="table-active" scope="col">{{score.get_par(course.id)}}</td>
+                {% endfor%}
+                <td scope="col">{{course.get_coursepar()}}</td>
+            </tr>
+            <tr>
+                <th scope="col">Score</th>
+                {% for score in scores %}
+                    {% if  score.score == 1 %}
+                        <td style="background: #ffff00" scope="col">{{ score.score }}</td>
+                    {% elif score.score - score.get_par(course.id) == -1 %} 
+                        <td style="background: #00ff00" scope="col">{{ score.score }}</td>
+                    {% elif score.score - score.get_par(course.id) == -2 %}
+                        <td style="background: #0080ff" scope="col">{{ score.score }}</td>
+                    {% elif score.score - score.get_par(course.id) < -2 %}
+                        <td style="background: #0000ff" scope="col">{{ score.score }}</td>
+                    {% elif score.score - score.get_par(course.id) == 1 %}
+                        <td style="background: #ff0000" scope="col">{{ score.score }}</td>
+                    {% elif score.score - score.get_par(course.id) == 2 %}
+                        <td style="background: #8080ff" scope="col">{{ score.score }}</td>
+                    {% elif score.score - score.get_par(course.id) > 2 %}
+                        <td style="background: #8000ff" scope="col">{{ score.score }}</td>
+                    {% else %}
+                        <td scope="col">{{ score.score }}</td>
+                    {% endif %}
+                {% endfor%}
+                <td scope="col">{{round.get_totalscorepar()}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 {% endblock %}

@@ -1,40 +1,48 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 <div class="container my-3">
     <h1 class="text-center">Course Statistics</h1>
 </div>
 <div class="container my-5">
-    <h2 class="text-center"> {{ course.coursename }} rounds played: {{rounds.count()}} </h2>
-    {% set holes = course.get_holes() %}
-    <table class="table table-inverse table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">Hole</th>
-                {% for hole in holes %}
-                    <th scope="col">{{hole.holenum}}</th>
-                {% endfor%}
-                <th scope="col">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="col">Par</th>
-                {% for hole in holes %}
-                    <td class="table-active" scope="col">{{hole.holepar}}</td>
-                {% endfor%}
-                <td scope="col">{{course.get_coursepar()}}</td>
-            </tr>
-            <tr>
-                <th scope="col">Mean</th>
-                {% for hole in holes %}
-                    <td scope="col">{{course.get_holemean(current_user.id, hole.holenum)}}</td>
-                {% endfor%}
-                <td scope="col">{{course.get_roundmean(current_user.id)}}</td>
-            </tr>
-        </tbody>
-    </table>
+    {% if rounds.count() == 0 %}
+    {%  else %}
+        <h2 class="text-center"> {{ course.coursename }} rounds played: {{rounds.count()}} </h2>
+        {% set holes = course.get_holes() %}
+        <table class="table table-inverse table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Hole</th>
+                    {% for hole in holes %}
+                        <th scope="col">{{hole.holenum}}</th>
+                    {% endfor%}
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="col">Par</th>
+                    {% for hole in holes %}
+                        <td class="table-active" scope="col">{{hole.holepar}}</td>
+                    {% endfor%}
+                    <td scope="col">{{course.get_coursepar()}}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Mean</th>
+                    {% for hole in holes %}
+                        {% set holemean = course.get_holemean(current_user.id, hole.holenum) %}
+                        {% if holemean > hole.holepar %}
+                            <td class="table-danger" scope="col">{{holemean}}</td>
+                        {% elif holemean < hole.holepar %}
+                            <td class="table-success" scope="col">{{ holemean }}</td>
+                        {% else %}
+                            <td scope="col">{{holemean}}</td>
+                        {% endif %}
+                    {% endfor%}
+                    <td scope="col">{{course.get_roundmean(current_user.id)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
 </div>
 <div class="container my-3">
     <h2 class="text-center">Past Rounds</h2>
@@ -67,5 +75,4 @@
     </table>
     {% endif %}
 </div>
-
 {% endblock %}

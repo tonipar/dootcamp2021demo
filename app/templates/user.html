@@ -1,14 +1,9 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>User: {{ user.username }}</h1>
-{% if user == current_user %}
-<p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
-{% endif %}
-<hr>
-{% for round in rounds %}
-<p>
-    {{ round.course }} 
-</p>
-{% endfor %}
+<div class="container my-3">
+    <h1 class="text-center">User: {{ user.username }}</h1>
+</div>
+<div class="container my-5">
+    <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edit_profile') }}" role="button">Edit Your Profile</a>
+</div>
 {% endblock %}

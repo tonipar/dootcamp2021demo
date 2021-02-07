@@ -189,7 +189,7 @@ def roundview(roundid):
     round = Round.query.filter_by(id=roundid).first_or_404()
     scores = round.get_scores()
     course = Course.query.filter_by(id=round.roundcourse_id).first_or_404()
-    return render_template('roundview.html', title='Roundview', scores=scores, course=course)
+    return render_template('roundview.html', title='Roundview', scores=scores, course=course, round = round)
     
 @app.route('/analyzecourse/<coursename>')
 @login_required

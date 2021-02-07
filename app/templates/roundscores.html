@@ -1,28 +1,16 @@
 {% extends "base.html" %}
-
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/form.html' import render_field %}
 {% block content %}
-
-<h1> {{ coursename }} / Hole {{ holenum }} </h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.score.label }}<br>
-        {{ form.score(size=64) }}<br>
-        {% for error in form.score.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.ob.label }}<br>
-        {{ form.ob(size=64) }}<br>
-        {% for error in form.ob.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <p>{{ form.submit() }}</p>
-
-</form>
-
+<div class="container my-3">
+    <h1 class="text-center">{{ coursename }} / Hole {{ holenum }}</h1>
+</div>
+<div class="container my-5">
+    <form method="post">
+        {{ form.csrf_token() }}
+        {{ render_field(form.score) }}
+        {{ render_field(form.submit) }}
+    </form>
+</div>
 {% endblock %}
 
