@@ -9,6 +9,7 @@
     <form method="post">
         {{ form.csrf_token() }}
         {{ render_field(form.score) }}
+        {{ render_field(form.ob) }}
         {{ render_field(form.submit) }}
     </form>
 </div>
