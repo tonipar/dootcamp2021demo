@@ -7,6 +7,12 @@
         <!-- Bootstrap CSS -->
         {{ bootstrap.load_css() }}
     {% endblock %}
+    <style>
+        html, 
+        body {
+            height: 100%;
+        }
+    </style>
     <title>Disc Golf CaddyBook</title>
 </head>
 <body>
@@ -48,7 +54,7 @@
             </ul>
         </div>
     </nav>
-    <div class="container-fluid">
+    <div class="container-fluid h-100">
         <!-- application content needs to be provided in the content block -->
     <!-- 
         <div class="container my-3">

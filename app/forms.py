@@ -88,7 +88,7 @@ class CreateRoundForm(FlaskForm):
 class ScoreForm(FlaskForm):
     score = IntegerField('Score', validators=[DataRequired()])
     ob = BooleanField('Ob')
-    submit = SubmitField('Submit')
+    submit = SubmitField('Next')
 
 
 
