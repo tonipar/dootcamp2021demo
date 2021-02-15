@@ -142,7 +142,7 @@ def createround():
     form = CreateRoundForm()
     if form.validate_on_submit():
         course = Course.query.filter_by(coursename=form.course.data).first_or_404()
-        today = date.today()
+        today = datetime.today()
         
         owm = OWM('309d1acf125bea57bb26866e210087ca')
         mgr = owm.weather_manager()
@@ -170,18 +170,30 @@ def roundscores(roundid, holenum):
     if holenum > course.courseholes:
         return redirect(url_for('roundview', roundid=round.id))
 
+    score = Roundscore.query.filter_by(hole=holenum, round_id=roundid).first()
     form = ScoreForm()
-    if form.validate_on_submit():
-        roundscore = Roundscore(hole=holenum, score=form.score.data, ob=form.ob.data, round_id = roundid)
-        db.session.add(roundscore)
-        db.session.commit()
-        
-        flash('Score for hole' + str(holenum) + ' has been updated!')
+    if score is None:
+        if form.validate_on_submit():
+            roundscore = Roundscore(hole=holenum, score=form.score.data, ob=form.ob.data, round_id = roundid)
+            db.session.add(roundscore)
+            db.session.commit()
+            flash('Score for hole' + str(holenum) + ' has been updated!')
+            holenum = holenum+1
+            return redirect(url_for('roundscores', roundid=roundid, holenum=holenum))
+        return render_template('roundscores.html', title='Round', coursename= course.coursename, holenum=holenum, roundid=roundid, form=form)
+    else:
+        if form.validate_on_submit():
+            score.score = form.score.data
+            score.ob = form.ob.data
+            db.session.commit()
+            flash('Score for hole' + str(holenum) + ' has been updated!')
+            holenum = holenum+1
+            return redirect(url_for('roundscores', roundid=roundid, holenum=holenum))
+        elif request.method == 'GET':
+            form.score.data = score.score
+            form.ob.data = score.ob
+        return render_template('roundscores.html', title='Round', coursename= course.coursename, holenum=holenum, roundid=roundid, form=form)
 
-        holenum = holenum+1
-
-        return redirect(url_for('roundscores', roundid = roundid, holenum = holenum))
-    return render_template('roundscores.html', title='Round', coursename= course.coursename, holenum=holenum, form=form)
 
 @app.route('/roundview/<roundid>')
 @login_required

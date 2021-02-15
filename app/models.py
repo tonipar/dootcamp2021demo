@@ -32,7 +32,7 @@ class User(UserMixin, db.Model):
 
     def get_rounds(self):
         playedrounds = Round.query.filter_by(rounduser_id=self.id)
-        return playedrounds
+        return playedrounds.order_by(Round.rounddate.desc())
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -80,12 +80,15 @@ class Course(db.Model):
         return roundmean
 
 class Hole(db.Model):
+    __tablename__ = 'course_hole'
+    __table_args__ = (
+        db.UniqueConstraint('holenum', 'holecourse_id'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     holenum = db.Column(db.Integer, index=True)
     holepar = db.Column(db.Integer)
     holelength = db.Column(db.Integer)
     holecourse_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-    db.UniqueConstraint('holenum', 'holecourse_id', name='coursehole')
 
     def __repr__(self):
         return '<Hole {}>'.format(self.holenum)
@@ -139,12 +142,16 @@ class Round(db.Model):
 
 
 class Roundscore(db.Model):
+    __tablename__ = 'round_hole'
+    __table_args__ = (
+        db.UniqueConstraint('hole', 'round_id'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     hole = db.Column(db.Integer)
     score = db.Column(db.Integer)
     ob = db.Column(db.Boolean)
     round_id = db.Column(db.Integer, db.ForeignKey('round.id'))
-    db.UniqueConstraint('hole', 'round_id', name='roundhole')
+    
 
     def get_par(self, courseid):
         hole = Hole.query.filter_by(holecourse_id=courseid, holenum=self.hole).first_or_404()
