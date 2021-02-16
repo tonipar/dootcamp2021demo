@@ -27,49 +27,49 @@
                 {% for score in scores %}
                     {% if  score.score == 1 %}
                         {% if score.ob %}
-                            <td style="background: #ffff00; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background: #ffff90; border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #ffff00" scope="col">{{ score.score }}</td>
+                            <td style="background: #ffff90" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% elif score.score - score.get_par(course.id) == -1 %}
                         {% if score.ob %}
-                            <td style="background: #00ff00; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(62,195,0,.25); border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #00ff00" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(62,195,0,.25)" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% elif score.score - score.get_par(course.id) == -2 %}
                         {% if score.ob %}
-                            <td style="background: #0080ff; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(62,195,0,.50); border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #0080ff" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(62,195,0,.50)" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% elif score.score - score.get_par(course.id) < -2 %}
                         {% if score.ob %}
-                            <td style="background: #0000ff; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(62,195,0,.75); border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #0000ff" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(62,195,0,.75)" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% elif score.score - score.get_par(course.id) == 1 %}
                         {% if score.ob %}
-                            <td style="background: #ff0000; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(244,43,3,.25); border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #ff0000" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(244,43,3,.25)" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% elif score.score - score.get_par(course.id) == 2 %}
                         {% if score.ob %}
-                            <td style="background: #8080ff; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(244,43,3,.50); border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #8080ff" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(244,43,3,.50)" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% elif score.score - score.get_par(course.id) > 2 %}
                         {% if score.ob %}
-                            <td style="background: #8000ff; border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(244,43,3,.75); border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
-                            <td style="background: #8000ff" scope="col">{{ score.score }}</td>
+                            <td style="background-color: rgba(244,43,3,.75)" scope="col">{{ score.score }}</td>
                         {% endif %}
                     {% else %}
                         {% if score.ob %}
-                            <td style="border-color: #800000; border-width: 4px;" scope="col">{{ score.score }}</td>
+                            <td style="border-color: #ff0000; border-width: 4px;" scope="col">{{ score.score }}</td>
                         {% else %}
                             <td scope="col">{{ score.score }}</td>
                         {% endif %}

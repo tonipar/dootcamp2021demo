@@ -14,8 +14,14 @@ from pyowm.owm import OWM
 @app.route('/index')
 @login_required
 def index():
-    
-    return render_template('index.html', title='Home', rounds = current_user.get_rounds())
+    page = request.args.get('page', 1, type=int)
+    rounds = current_user.get_rounds().paginate(page,3,False)
+    next_url = url_for('index', page=rounds.next_num) \
+        if rounds.has_next else None
+    prev_url = url_for('index', page=rounds.prev_num) \
+        if rounds.has_prev else None
+    return render_template('index.html', title='Home', rounds=rounds.items, next_url=next_url,
+                           prev_url=prev_url)
 
 # Login Page. If user is already logged in redirect user to the main page.
 # If password or username is wrong user will get error message.
@@ -62,11 +68,7 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    rounds = [
-        {'course': 'Peltosalmi DGP'},
-        {'course': 'Huuhanmetsä DGP'}
-    ]
-    return render_template('user.html', user=user, rounds=rounds)
+    return render_template('user.html', user=user)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
