@@ -28,5 +28,17 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="d-flex">
+        <div class="mr-auto p-2">
+            {% if prev_url %}
+            <a href="{{ prev_url }}">Previous</a>
+            {% endif %}
+        </div>
+        <div class="ml-auto p-2">
+            {% if next_url %}
+            <a href="{{ next_url }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

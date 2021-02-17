@@ -54,9 +54,9 @@ class EditProfileForm(FlaskForm):
                 raise ValidationError('Email is already in use.')
 
 class CreateCourseForm(FlaskForm):
-    coursename = StringField('Coursename', validators=[DataRequired()])
-    courseholes = IntegerField('Courseholes', validators=[DataRequired()])
-    courselocation = StringField('courselocation', validators=[DataRequired()])
+    coursename = StringField('Name', validators=[DataRequired()])
+    courseholes = IntegerField('Number of holes', validators=[DataRequired()])
+    courselocation = StringField('Location (city)', validators=[DataRequired()])
     submit = SubmitField('Submit')
     
     def validate_coursename(self, coursename):

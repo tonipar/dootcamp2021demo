@@ -109,8 +109,14 @@ def createcourse():
 @app.route('/courses')
 @login_required
 def courses():
-    courses = Course.query.all()
-    return render_template('courses.html', courses = courses)
+    page = request.args.get('page', 1, type=int)
+    courses = Course.query.order_by(Course.coursename.desc()).paginate(page,5,False)
+    next_url = url_for('courses', page=courses.next_num) \
+        if courses.has_next else None
+    prev_url = url_for('courses', page=courses.prev_num) \
+        if courses.has_prev else None
+    return render_template('courses.html', courses = courses.items, next_url=next_url,
+                           prev_url=prev_url)
 
 @app.route('/course/<coursename>')
 @login_required
@@ -155,6 +161,14 @@ def createround():
         round = Round(rounddate=today, roundweather=icon, rounduser_id= current_user.id ,roundcourse_id= course.id)
         db.session.add(round)
         db.session.commit()
+
+        holes = course.get_holes()
+        holenum = 1
+        for hole in holes:
+            roundscore = Roundscore(hole=holenum, score=hole.holepar, ob=False, round_id=round.id)
+            db.session.add(roundscore)
+            db.session.commit()
+            holenum = holenum+1
         
         flash('New round has been started!')
         holenum = 1
@@ -209,5 +223,11 @@ def roundview(roundid):
 @login_required
 def analyzecourse(coursename):
     course = Course.query.filter_by(coursename=coursename).first_or_404()
-    rounds = course.get_rounds(current_user.id)
-    return render_template('analyzecourse.html', title='Analyze Course', course=course, rounds=rounds)
+    page = request.args.get('page', 1, type=int)
+    rounds = course.get_rounds(current_user.id).paginate(page,3,False)
+    next_url = url_for('analyzecourse', coursename = coursename, page=rounds.next_num) \
+        if rounds.has_next else None
+    prev_url = url_for('analyzecourse', coursename = coursename, page=rounds.prev_num) \
+        if rounds.has_prev else None
+    return render_template('analyzecourse.html', title='Analyze Course', course=course, rounds=rounds.items, next_url=next_url,
+                           prev_url=prev_url)

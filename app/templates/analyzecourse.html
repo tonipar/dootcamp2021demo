@@ -4,9 +4,9 @@
     <h1 class="text-center">Course Statistics</h1>
 </div>
 <div class="container my-5">
-    {% if rounds.count() == 0 %}
+    {% if rounds|length == 0 %}
     {%  else %}
-        <h2 class="text-center"> {{ course.coursename }} rounds played: {{rounds.count()}} </h2>
+        <h2 class="text-center"> {{ course.coursename }} rounds played: {{rounds|length}} </h2>
         {% set holes = course.get_holes() %}
         <table class="table table-inverse table-bordered">
             <thead>
@@ -31,14 +31,14 @@
                     {% for hole in holes %}
                         {% set holemean = course.get_holemean(current_user.id, hole.holenum) %}
                         {% if holemean > hole.holepar %}
-                            <td class="table-danger" scope="col">{{holemean}}</td>
+                            <td class="table-danger" scope="col">{{"{:.1f}".format(holemean)}}</td>
                         {% elif holemean < hole.holepar %}
-                            <td class="table-success" scope="col">{{ holemean }}</td>
+                            <td class="table-success" scope="col">{{"{:.1f}".format(holemean)}}</td>
                         {% else %}
                             <td scope="col">{{holemean}}</td>
                         {% endif %}
                     {% endfor%}
-                    <td scope="col">{{course.get_roundmean(current_user.id)}}</td>
+                    <td scope="col">{{"{:.1f}".format(course.get_roundmean(current_user.id))}}</td>
                 </tr>
             </tbody>
         </table>
@@ -46,7 +46,7 @@
 </div>
 <div class="container my-3">
     <h2 class="text-center">Past Rounds</h2>
-    {% if rounds.count() == 0 %}
+    {% if rounds|length == 0 %}
     <p class="text-center">
         No past rounds. You can start round <a href="{{ url_for('createround') }}">here</a>
     </p>
@@ -73,6 +73,18 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="d-flex">
+        <div class="mr-auto p-2">
+            {% if prev_url %}
+            <a href="{{ prev_url }}">Newer Rounds</a>
+            {% endif %}
+        </div>
+        <div class="ml-auto p-2">
+            {% if next_url %}
+            <a href="{{ next_url }}">Older Rounds</a>
+            {% endif %}
+        </div>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
