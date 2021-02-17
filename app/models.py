@@ -152,7 +152,9 @@ class Roundscore(db.Model):
     ob = db.Column(db.Boolean)
     round_id = db.Column(db.Integer, db.ForeignKey('round.id'))
     
-
+    def __repr__(self):
+        return '<Roundscore {}>'.format(self.id)
+    
     def get_par(self, courseid):
         hole = Hole.query.filter_by(holecourse_id=courseid, holenum=self.hole).first_or_404()
         return hole.holepar
