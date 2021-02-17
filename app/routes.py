@@ -52,6 +52,7 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
+        flash('curretn user authenticated')
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -61,6 +62,7 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
+    flash('test message')
     return render_template('register.html', title='Register', form=form)
 
 # User profile page
